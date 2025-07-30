@@ -1,0 +1,26 @@
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+
+# Tu entorno virtual (donde se instalan las librerías)
+venv/
+.venv/
+env/
+
+# Archivos de configuración y caché de VS Code
+.vscode/
+
+# Variables de entorno y claves (¡MUY IMPORTANTE!)
+.env
+.flaskenv
+
+# Archivos de log
+*.log
+
+# Bases de datos locales (si usas SQLite)
+*.db
+*.sqlite
+
+# Archivos del sistema operativo (macOS, Windows, etc.)
+.DS_Store
+Thumbs.db
