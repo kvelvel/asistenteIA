@@ -18,3 +18,12 @@ class GeminiServiceError(ApplicationError):
                     status_code=500
                 ):
         super().__init__(message, status_code)
+        
+class InvalidInputError(ApplicationError):
+    """Excepción para errores al recibir inputs inválidos."""
+    def __init__(
+                    self,
+                    message="Entrada inválida.",
+                    status_code=400
+                ):
+        super().__init__(message, status_code)

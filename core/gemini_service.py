@@ -1,10 +1,10 @@
 import os
 from config import AppConfig
 from google import genai
-from google.genai import HarmCategory, HarmBlockThreshold
+from google.genai.types import HarmBlockThreshold, HarmCategory
+
 
 from errors.exceptions import GeminiServiceError
-
 
 class GeminiService:
     def __init__(self):
@@ -13,10 +13,9 @@ class GeminiService:
                 message="La clave de API de Gemini no está configurada.",
                 status_code=400
             )
-        self.api_key = AppConfig.GEMINI_API_KEY
-        self.model_name = AppConfig.GEMINI_MODEL_NAME
-        self.client = genai.Client(api_key=self.api_key)
-        print(f"Conectado a Gemini con el modelo: {self.model_name}")
+        
+        self.client = genai.Client(api_key=AppConfig.GEMINI_API_KEY)
+        print(f"Conectado a Gemini")
 
     def get_response(self, prompt: str, history: list = None) -> str:
         try:
@@ -39,15 +38,16 @@ class GeminiService:
             }
 
             if history:
-                chat = self.model.start_chat(history=history)
+                """chat = self.model.start_chat(history=history)
                 response = chat.send_message(
                                                 prompt,
                                                 safety_settings=safety_settings
-                                            )
+                                            )""" 
             else:
-                response = self.model.generate_content(
-                                prompt=prompt,
-                                safety_settings=safety_settings
+                response = self.client.models.generate_content(
+                                model=AppConfig.GEMINI_MODEL_NAME,
+                                contents=prompt
+                                #safety_settings=safety_settings
                                 )
 
             if response.candidates:
