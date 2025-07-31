@@ -7,9 +7,11 @@ from errors.exceptions import ApplicationError, InvalidInputError, GeminiService
 from errors.handlers import handle_application_error, handle_validation_error, handle_generic_exception
 from werkzeug.exceptions import BadRequest
 import logging
+import logging.config
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.config.dictConfig(AppConfig.LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
+
 
 app = Flask(__name__)
 app.config['DEBUG'] = AppConfig.DEBUG
@@ -29,4 +31,4 @@ def health_check():
 
 if __name__ == '__main__':
     logger.info("Iniciando servidor Flask con múltiples Blueprints...")
-    app.run(host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5001, debug=AppConfig.DEBUG)
