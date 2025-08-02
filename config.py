@@ -10,6 +10,7 @@ class AppConfig:
     # --- Configuración de Google Gemini API ---
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME")
+    GEMINI_RESPONSE_LENGTH = int(os.getenv("GEMINI_RESPONSE_LENGTH", 100)) 
     
     # --- Configuración de Logger ---
     LOGGING_CONFIG = {

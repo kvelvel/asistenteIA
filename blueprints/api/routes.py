@@ -6,7 +6,7 @@ import io
 import logging
 
 logger = logging.getLogger(__name__) 
-api_ia = Blueprint('api', __name__)
+api_ia = Blueprint('api_ia', __name__)
 facade = IAFacade()
 
 """@api_bp.route('/dialog', methods=['POST'])

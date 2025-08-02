@@ -1,7 +1,11 @@
 import os
 from config import AppConfig
+
+"""import google.generativeai as genai
+from google.generativeai.types import HarmBlockThreshold, HarmCategory"""
+
 from google import genai
-from google.genai.types import HarmBlockThreshold, HarmCategory
+from google.genai import types
 
 
 from errors.exceptions import GeminiServiceError
@@ -13,11 +17,17 @@ class GeminiService:
                 message="La clave de API de Gemini no está configurada.",
                 status_code=400
             )
+            
+        self.client = genai.Client()
         
-        self.client = genai.Client(api_key=AppConfig.GEMINI_API_KEY)
-        print(f"Conectado a Gemini")
+        """ genai.configure(api_key=AppConfig.GEMINI_API_KEY)
+        print(f"Conectado a Gemini con la clave de API: {AppConfig.GEMINI_API_KEY}")
+        self.model = genai.GenerativeModel(AppConfig.GEMINI_MODEL_NAME)
+        print(f"Conectado a Gemini con el modelo: {AppConfig.GEMINI_MODEL_NAME}")
+        print(f"Conectado a Gemini con el modelo: {self.model}") """
 
     def get_response(self, prompt: str, history: list = None) -> str:
+        print(f"este es el modelo: {self.client.models}")
         try:
             """ Configuración de seguridad para bloqueo de contenido,
             puede cambiar para produccion (
@@ -26,29 +36,37 @@ class GeminiService:
                 BLOCK_MEDIUM_AND_ABOVE = bloquea medio y superior,
                 BLOCK_HIGH_AND_ABOVE = bloquea alto y superior
             )"""
-            safety_settings = {
-                HarmCategory.HARM_CATEGORY_HATE_SPEECH:
-                    HarmBlockThreshold.BLOCK_NONE,
-                HarmCategory.HARM_CATEGORY_HARASSMENT:
-                    HarmBlockThreshold.BLOCK_NONE,
-                HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT:
-                    HarmBlockThreshold.BLOCK_NONE,
-                HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT:
-                    HarmBlockThreshold.BLOCK_NONE,
-            }
-
+            safety_settings_project = [
+                types.SafetySetting(
+              category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+              threshold=types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            ),
+            types.SafetySetting(
+              category=types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+              threshold=types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            ),
+            types.SafetySetting(
+              category=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+              threshold=types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            ),
+            types.SafetySetting(
+              category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+              threshold=types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            )
+            ]
+            
             if history:
-                """chat = self.model.start_chat(history=history)
-                response = chat.send_message(
-                                                prompt,
-                                                safety_settings=safety_settings
-                                            )""" 
+                print(f"este es el modelo: {self.client.models}")
+                
             else:
+                print(f"este es el modelo: {self.client.models.list}")
                 response = self.client.models.generate_content(
                                 model=AppConfig.GEMINI_MODEL_NAME,
-                                contents=prompt
-                                #safety_settings=safety_settings
+                                contents=prompt,
+                                config=types.GenerateContentConfig(
+                                    safety_settings=safety_settings_project
                                 )
+                )
 
             if response.candidates:
                 response_text = ""
